@@ -30,10 +30,15 @@ async function run() {
         const carCollection = client.db("carDB").collection('cars')
 
         // post method
-
         app.post('/cars', async (req, res) => {
             const carInfo = req.body;
             const result = await carCollection.insertOne(carInfo);
+            res.send(result);
+        });
+
+        // get data from database
+        app.get("/cars", async (req, res) => {
+            const result = await carCollection.find().toArray();
             res.send(result);
         });
 
