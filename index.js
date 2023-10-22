@@ -13,7 +13,6 @@ app.use(express.json());
 
 
 const uri = `mongodb+srv://${process.env.AUTOMOTIVE_DB}:${process.env.AUTOMOTIVE_PASS}@cluster0.hgznyse.mongodb.net/?retryWrites=true&w=majority`;
-console.log(uri);
 
 
 const client = new MongoClient(uri, {
@@ -56,6 +55,39 @@ async function run() {
             const query = { _id: new ObjectId(id) };
             const result = await carCollection.deleteOne(query);
             console.log(result);
+            res.send(result);
+        });
+
+        // update method
+        app.get("/cars/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await carCollection.findOne(query);
+            console.log(result);
+            res.send(result);
+        });
+
+        app.put("/cars/:id", async (req, res) => {
+            const id = req.params.id;
+            const updateCar = req.body;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const car = {
+                $set: {
+                    image: updateCar.image,
+                    model: updateCar.model,
+                    brand: updateCar.brand,
+                    price: updateCar.price,
+                    type: updateCar.type,
+                    rating: updateCar.rating,
+                    description: updateCar.description
+                },
+            };
+            const result = await carCollection.updateOne(
+                filter,
+                car,
+                options
+            );
             res.send(result);
         });
 
