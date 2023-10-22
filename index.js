@@ -49,6 +49,12 @@ async function run() {
             res.send(result);
         });
 
+        // get method for my cart
+        app.get("/cart", async (req, res) => {
+            const result = await cartCollection.find().toArray();
+            res.send(result);
+        });
+
         // delete method
         app.delete("/cars/:id", async (req, res) => {
             const id = req.params.id;
