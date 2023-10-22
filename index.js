@@ -28,11 +28,19 @@ async function run() {
     try {
         await client.connect();
         const carCollection = client.db("carDB").collection('cars')
+        const cartCollection = client.db("cartDB").collection('cart')
 
         // post method
         app.post('/cars', async (req, res) => {
             const carInfo = req.body;
             const result = await carCollection.insertOne(carInfo);
+            res.send(result);
+        });
+
+        // post method for add to cart
+        app.post('/cart', async (req, res) => {
+            const details = req.body;
+            const result = await cartCollection.insertOne(details);
             res.send(result);
         });
 
@@ -45,11 +53,11 @@ async function run() {
         // delete method
         app.delete("/cars/:id", async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await carCollection.deleteOne(query);
             console.log(result);
             res.send(result);
-          });
+        });
 
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
