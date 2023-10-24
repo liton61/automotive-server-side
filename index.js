@@ -28,11 +28,30 @@ async function run() {
         await client.connect();
         const carCollection = client.db("carDB").collection('cars')
         const cartCollection = client.db("cartDB").collection('cart')
+        const brandCollection = client.db("carDB").collection('brand')
+
+        app.get('/allCars/:name', async (req, res) => {
+            const carsInfo = req.params.name;
+            const query = { brand: carsInfo };
+            const result = await carCollection.find(query).toArray();
+            res.send(result);
+        })
 
         // post method
         app.post('/cars', async (req, res) => {
             const carInfo = req.body;
             const result = await carCollection.insertOne(carInfo);
+            res.send(result);
+        });
+        // post method
+        app.post('/brand', async (req, res) => {
+            const brandInfo = req.body;
+            const result = await brandCollection.insertOne(brandInfo);
+            res.send(result);
+        });
+        // get method
+        app.get("/brand", async (req, res) => {
+            const result = await brandCollection.find().toArray();
             res.send(result);
         });
 
